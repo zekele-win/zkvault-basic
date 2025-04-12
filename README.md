@@ -36,7 +36,7 @@ This project is a simplified version of Tornado Cash’s basic mechanism—an id
 
 ---
 
-## Core Design Philosophy
+## Design Philosophy
 
 The purpose of `zkvault` is to achieve the following three core characteristics:
 
