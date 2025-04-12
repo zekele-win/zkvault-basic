@@ -34,6 +34,46 @@ zkvault-basic 的设计初衷是作为学习与分享的工具，复现匿名存
 
 ---
 
+## 核心设计理念
+
+`zkvault` 的目的是实现以下三个核心特点：
+
+- **一致性（Consistency）**
+- **安全性（Security）**
+- **隐私性（Privacy）**（暂未实现）
+
+我们通过梳理存款（deposit）和取款（withdraw）流程来具体说明这三个特点。
+
+### 存款（Deposit）过程
+
+1. 【APP】准备调用【合约】函数 `deposit(commitment)`
+   - 【APP】随机生成 `secret`（用户确保其不泄漏）
+   - 【APP】计算【合约】函数 `deposit` 需要的参数 `commitment = hash(secret)`，`commitment` 是公开的
+2. 【合约】函数 `deposit(commitment)` 处理
+   - 确保用户存入的资金正确
+   - 保存 `commitment`，并标记该 `commitment` 为 `DEPOSITED` 状态
+
+### 取款（Withdraw）过程
+
+1. 【APP】准备调用【合约】函数 `withdraw(pA, pB, pC, pubSignals)`
+   - 参数解释
+     - `(pA, pB, pC, pubSignals)` 是标准的 zkSNARK proof 参数
+     - `pubSignals[0] = commitment`，`pubSignals[1] = recipient`
+   - 【APP】通过存款时保存的 `secret`，以及指定的 `recipient` 调用【zk 电路】的 `Withdraw(public: commitment, public: recipient, private: secret)`，生成 zkProof（标准组成：`pA`, `pB`, `pC`, `pubSignals`）
+   - 【zk 电路】生成的 zkProof 绑定了 `commitment`、`recipient` 和计算 `commitment` 的算法逻辑，确保 zkProof 中的任何数值修改都无法通过【合约】端验证
+   - 如果 `withdraw` 需要的 zkProof 中的 `commitment`（`pubSignals[0]`）与存款时的 `commitment` 不一致，则【合约】端会拒绝 `withdraw`，要么 `verifier` 失败，要么 `commitment` 状态无法正确识别。这确保了 **一致性（Consistency）**
+   - 同时，由于生成 zkProof 时绑定了 `recipient`，即使由于意外因素（如 gas 不足）导致执行【合约】函数 `withdraw` 失败，其他人也不能通过修改 `recipient` 参数盗取资金。因为修改 `recipient` 需要【APP】重新生成 zkProof，而重新生成 zkProof 需要 `secret`。这确保了 **安全性（Security）**
+2. 【合约】函数 `withdraw(pA, pB, pC, pubSignals)` 处理
+   - 检查 `commitment` 状态
+   - 调用 `verifier` 验证 zkProof（`pA`, `pB`, `pC`, `pubSignals`）的有效性
+     - `verifier` 是【APP】在编译【zk 电路】时生成的对应合约
+
+### 风险
+
+整个存款/取款过程，为了保证 **一致性（Consistency）**，`deposit` 和 `withdraw` 都暴露了 `commitment`，这意味着执行存款和执行取款的账号地址是关联的，从而导致缺乏 **隐私性（Privacy）**
+
+---
+
 ## 🧱 项目结构
 
 ```bash
