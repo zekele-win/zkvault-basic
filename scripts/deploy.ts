@@ -163,8 +163,8 @@ async function deploy(denomination: string) {
   console.log(
     `Deploy successful with: ${JSON.stringify(
       {
-        address: verifierContractAddress,
-        deployer: wallet.address,
+        verifierContractAddress,
+        vaultContractAddress,
       },
       null,
       2
