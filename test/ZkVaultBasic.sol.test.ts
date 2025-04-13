@@ -23,7 +23,8 @@ describe("ZkVaultBasic contract", function () {
   async function withdraw(
     commitment: bigint,
     recipient: bigint,
-    secret: bigint
+    secret: bigint,
+    fakeProof: boolean = false
   ) {
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
       {
@@ -47,7 +48,7 @@ describe("ZkVaultBasic contract", function () {
       ],
       [BigInt(proof.pi_c[0]), BigInt(proof.pi_c[1])],
       [
-        BigInt(publicSignals[0]),
+        fakeProof ? 0n : BigInt(publicSignals[0]),
         BigInt(publicSignals[1]),
         BigInt(publicSignals[2]),
         BigInt(publicSignals[3]),
@@ -167,6 +168,18 @@ describe("ZkVaultBasic contract", function () {
       await expect(withdraw(commitment, recipient, secret)).to.revertedWith(
         "Commitment already spent"
       );
+    });
+
+    it("should revert if commitment proof is invalid.", async function () {
+      const secret = 1234n;
+      const recipient = 5678n;
+      const commitment = await pedersen.hash(secret);
+
+      await deposit(commitment, _denomination);
+
+      await expect(
+        withdraw(commitment, recipient, secret, true)
+      ).to.revertedWith("Invalid proof");
     });
 
     it("should correctly emit an event on withdraw.", async function () {
