@@ -258,15 +258,3 @@ Upgrade to `zkvault-classic` by implementing a Merkle Tree to fully decouple dep
 ## 📄 License
 
 This project uses the MIT license. See [LICENSE](./LICENSE) for details.
-
----
-
-## 🤝 Contact
-
-Feel free to reach out for questions, collaboration, or improvements:
-
-- Email: zekele.win.0@gmail.com
-- GitHub: [Zekele Win](https://github.com/zekele-win)
-- X : [Zekele Win](https://x.com/zekele_win)
-
-If you find this project helpful, consider giving it a star ⭐️, fork, or sharing it with others 🙌

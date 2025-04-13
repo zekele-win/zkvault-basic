@@ -254,15 +254,3 @@ npm run cli -- withdraw --secret <your-secret>
 ## 📄 License
 
 本项目使用 MIT 开源协议，详情见 [LICENSE](./LICENSE)。
-
----
-
-## 🤝 联系与交流
-
-欢迎交流、提问或探讨项目相关的任何内容。如果你在使用中遇到问题，或者想一起完善它，欢迎联系我：
-
-- Email: zekele.win.0@gmail.com
-- GitHub: [Zekele Win](https://github.com/zekele-win)
-- X : [Zekele Win](https://x.com/zekele_win)
-
-如果你觉得这个项目对你有帮助，欢迎 star ⭐️、fork 或分享给更多感兴趣的朋友 🙌
