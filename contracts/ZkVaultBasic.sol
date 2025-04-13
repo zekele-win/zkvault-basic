@@ -77,8 +77,8 @@ contract ZkVaultBasic is ReentrancyGuard {
     /// @param pB zk-SNARK proof parameter B
     /// @param pC zk-SNARK proof parameter C
     /// @param pubSignals The public inputs to the zk circuit:
-    /// - pubSignals[0]: commitment (bytes32 cast as uint)
-    /// - pubSignals[1]: recipient address (cast to uint160)
+    /// - pubSignals[2]: commitment (bytes32 cast as uint)
+    /// - pubSignals[3]: recipient address (cast to uint160)
     /// @dev The proof must be valid and match an unused commitment.
     /// The `_denomination` ETH is transferred to the recipient.
     function withdraw(
@@ -89,14 +89,14 @@ contract ZkVaultBasic is ReentrancyGuard {
     ) external nonReentrant {
         // Retrieve the commitment from the public signals
         // and ensure it has been deposited
-        bytes32 commitment = bytes32(pubSignals[0]);
+        bytes32 commitment = bytes32(pubSignals[2]);
         require(
             _commitments[commitment] == CommitmentStatus.DEPOSITED,
             "Commitment already spent"
         );
 
         // Retrieve the recipient address from the public signals
-        address recipient = address(uint160(pubSignals[1]));
+        address recipient = address(uint160(pubSignals[3]));
 
         // Validate the zero-knowledge proof using the provided proof parameters
         bool valid = _verifier.verifyProof(pA, pB, pC, pubSignals);
