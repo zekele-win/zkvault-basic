@@ -35,11 +35,6 @@ template Withdraw() {
     // Private input: user's secret
     signal input secret;
 
-    // Output: recomputed commitment for consistency checking and on-chain verification
-    signal output commitmentOut;
-    // Output: recipient for passed through and on-chain verification
-    signal output recipientOut;
-
     // Reject empty inputs
     assert(recipient != 0);
     assert(secret != 0);
@@ -49,9 +44,9 @@ template Withdraw() {
     hasher.secret <== secret;
     hasher.commitment === commitment;
 
-    // Output values for on-chain verification
-    commitmentOut <== hasher.commitment;
-    recipientOut <== recipient;
+    // Squares are used to prevent optimizer from removing those constraints
+    signal recipientSquare;
+    recipientSquare <== recipient * recipient;
 }
 
 // Declare the main circuit with public signals

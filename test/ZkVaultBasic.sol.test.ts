@@ -16,8 +16,8 @@ describe("ZkVaultBasic contract", function () {
 
   async function deposit(commitment: bigint, value: bigint = 0n) {
     return value
-      ? _vaultContract.deposit(hex.from(commitment), { value })
-      : _vaultContract.deposit(hex.from(commitment));
+      ? _vaultContract.deposit(commitment, { value })
+      : _vaultContract.deposit(commitment);
   }
 
   async function withdraw(
@@ -46,13 +46,8 @@ describe("ZkVaultBasic contract", function () {
         [BigInt(proof.pi_b[0][1]), BigInt(proof.pi_b[0][0])],
         [BigInt(proof.pi_b[1][1]), BigInt(proof.pi_b[1][0])],
       ],
-      [BigInt(proof.pi_c[0]), BigInt(proof.pi_c[1])],
-      [
-        fakeProof ? 0n : BigInt(publicSignals[0]),
-        BigInt(publicSignals[1]),
-        BigInt(publicSignals[2]),
-        BigInt(publicSignals[3]),
-      ]
+      fakeProof ? [0n, 0n] : [BigInt(proof.pi_c[0]), BigInt(proof.pi_c[1])],
+      [BigInt(publicSignals[0]), BigInt(publicSignals[1])]
     );
   }
 
@@ -191,7 +186,7 @@ describe("ZkVaultBasic contract", function () {
 
       await expect(withdraw(commitment, recipient, secret))
         .to.emit(_vaultContract, "Withdraw")
-        .withArgs(hex.from(commitment), hex.from(recipient, 20), anyValue);
+        .withArgs(commitment, hex.from(recipient, 20), anyValue);
     });
 
     it("should correctly emit an event on withdraw event if the caller is not the owner.", async function () {
@@ -201,11 +196,11 @@ describe("ZkVaultBasic contract", function () {
 
       await _vaultContract
         .connect(_guestAccount)
-        .deposit(hex.from(commitment), { value: _denomination });
+        .deposit(commitment, { value: _denomination });
 
       await expect(withdraw(commitment, recipient, secret))
         .to.emit(_vaultContract, "Withdraw")
-        .withArgs(hex.from(commitment), hex.from(recipient, 20), anyValue);
+        .withArgs(commitment, hex.from(recipient, 20), anyValue);
     });
 
     it("should correctly withdraw the correct denomination from contract.", async function () {

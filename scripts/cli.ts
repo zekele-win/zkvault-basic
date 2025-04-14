@@ -111,7 +111,7 @@ async function deposit() {
   });
 
   // Perform the deposit transaction
-  const tx = await vaultContract.deposit(hex.from(commitment), {
+  const tx = await vaultContract.deposit(commitment, {
     value: denomination,
     gasLimit: 5_000_000,
     maxFeePerGas: ethers.parseUnits("50", "gwei"),
@@ -196,12 +196,7 @@ async function withdraw(secret: bigint) {
       [BigInt(proof.pi_b[1][1]), BigInt(proof.pi_b[1][0])],
     ],
     [BigInt(proof.pi_c[0]), BigInt(proof.pi_c[1])],
-    [
-      BigInt(publicSignals[0]),
-      BigInt(publicSignals[1]),
-      BigInt(publicSignals[2]),
-      BigInt(publicSignals[3]),
-    ]
+    [BigInt(publicSignals[0]), BigInt(publicSignals[1])]
   );
   console.log({ tx });
   const receipt = await tx.wait();

@@ -9,7 +9,7 @@ describe("ZkVaultBasic _circuit", () => {
     _circuit = await wasm("./circuits/ZkVaultBasic.circom");
   });
 
-  it("should correctly output consistent commitment and recipient.", async () => {
+  it("should correctly invoke.", async () => {
     const secret = 1234n;
     const recipient = 5678n;
     const commitment = await pedersen.hash(secret);
@@ -19,41 +19,13 @@ describe("ZkVaultBasic _circuit", () => {
       true
     );
 
-    // const { commitmentOut, recipientOut } = (await _circuit.getOutput(witness, {
-    //   commitmentOut: 1,
-    //   recipientOut: 1,
-    // })) as { [key: string]: bigint };
-    // expect(commitmentOut).to.equal(commitment);
-    // expect(recipientOut).to.equal(recipient);
-
-    await _circuit.assertOut(witness, { commitmentOut: commitment });
-    await _circuit.assertOut(witness, { recipientOut: recipient });
+    await _circuit.assertOut(witness, {});
   });
 
   it("should throw error if recipient = 0n.", async () => {
     const secret = 1234n;
     const recipient = 0n;
     const commitment = await pedersen.hash(secret);
-
-    // try {
-    //   await _circuit.calculateWitness({ commitment, recipient, secret }, true);
-    //   expect.fail("should have caught an error on recipient == 0");
-    // } catch (err) {
-    //   if (err instanceof Error) {
-    //     expect(err.message).to.include("Assert Failed");
-    //   } else {
-    //     expect.fail("Caught an unknown error type");
-    //   }
-    // }
-
-    // let error;
-    // try {
-    //   await _circuit.calculateWitness({ commitment, recipient, secret }, true);
-    // } catch (err) {
-    //   error = err;
-    // }
-    // expect(error).to.instanceOf(Error);
-    // expect((error as Error).message).to.include("Assert Failed");
 
     await expect(
       _circuit.calculateWitness({ commitment, recipient, secret }, true)

@@ -20,19 +20,19 @@ contract ZkVaultBasic is ReentrancyGuard {
     // Deposit denomination
     uint256 private immutable _denomination;
     // Mapping to track commitments and whether they have been used or spent
-    mapping(bytes32 => CommitmentStatus) private _commitments;
+    mapping(uint256 => CommitmentStatus) private _commitments;
 
     /// @notice Emitted when a user deposits ETH into the vault
     /// @param commitment The Pedersen hash of the user's secret
     /// @param timestamp The block timestamp when the deposit was made.
-    event Deposit(bytes32 indexed commitment, uint256 timestamp);
+    event Deposit(uint256 indexed commitment, uint256 timestamp);
 
     /// @notice Emitted when a user successfully withdraws from the vault
     /// @param commitment The same commitment used in the deposit
     /// @param recipient The address that receives the ETH
     /// @param timestamp The block timestamp when the withdrawal was made
     event Withdraw(
-        bytes32 indexed commitment,
+        uint256 indexed commitment,
         address indexed recipient,
         uint256 timestamp
     );
@@ -55,7 +55,7 @@ contract ZkVaultBasic is ReentrancyGuard {
     /// @param commitment The Pedersen hash of the user's secret
     /// @dev The commitment must not have been used before.
     /// The sender must attach exactly `_denomination` ETH.
-    function deposit(bytes32 commitment) external payable nonReentrant {
+    function deposit(uint256 commitment) external payable nonReentrant {
         // Ensure the deposited amount matches the required denomination
         require(msg.value == _denomination, "Invalid deposit amount");
 
@@ -77,26 +77,26 @@ contract ZkVaultBasic is ReentrancyGuard {
     /// @param pB zk-SNARK proof parameter B
     /// @param pC zk-SNARK proof parameter C
     /// @param pubSignals The public inputs to the zk circuit:
-    /// - pubSignals[2]: commitment (bytes32 cast as uint)
-    /// - pubSignals[3]: recipient address (cast to uint160)
+    /// - pubSignals[0]: commitment
+    /// - pubSignals[1]: recipient address
     /// @dev The proof must be valid and match an unused commitment.
     /// The `_denomination` ETH is transferred to the recipient.
     function withdraw(
         uint[2] calldata pA,
         uint[2][2] calldata pB,
         uint[2] calldata pC,
-        uint[4] calldata pubSignals
+        uint[2] calldata pubSignals
     ) external nonReentrant {
         // Retrieve the commitment from the public signals
         // and ensure it has been deposited
-        bytes32 commitment = bytes32(pubSignals[2]);
+        uint256 commitment = pubSignals[0];
         require(
             _commitments[commitment] == CommitmentStatus.DEPOSITED,
             "Commitment already spent"
         );
 
         // Retrieve the recipient address from the public signals
-        address recipient = address(uint160(pubSignals[3]));
+        address recipient = address(uint160(pubSignals[1]));
 
         // Validate the zero-knowledge proof using the provided proof parameters
         bool valid = _verifier.verifyProof(pA, pB, pC, pubSignals);
@@ -133,6 +133,6 @@ interface IVerifier {
         uint[2] calldata pA,
         uint[2][2] calldata pB,
         uint[2] calldata pC,
-        uint[4] calldata pubSignals
+        uint[2] calldata pubSignals
     ) external view returns (bool);
 }
