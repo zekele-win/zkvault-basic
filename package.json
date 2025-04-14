@@ -2,7 +2,7 @@
   "name": "zkvault-basic",
   "version": "1.0.0",
   "scripts": {
-    "build": "mkdir -p ./build && ~/tool/iden3/circom ./circuits/ZkVaultBasic.circom --r1cs --wasm -o ./build",
+    "build": "mkdir -p ./build && circom ./circuits/ZkVaultBasic.circom --r1cs --wasm -o ./build",
     "setup": "snarkjs groth16 setup ./build/ZkVaultBasic.r1cs ./ref/powersOfTau28_hez_final_12.ptau ./build/ZkVaultBasic.zkey && snarkjs zkey export verificationkey ./build/ZkVaultBasic.zkey ./build/ZkVaultBasicVerificationKey.json && snarkjs zkey export solidityverifier ./build/ZkVaultBasic.zkey ./contracts/ZkVaultBasicVerifier.sol",
     "compile": "hardhat clean && hardhat compile",
     "test": "hardhat test",
