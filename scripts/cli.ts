@@ -177,8 +177,8 @@ async function withdraw(secret: bigint) {
       // Private inputs
       secret,
     },
-    path.join(__dirname, "../circuits/build/ZkVaultBasic_js/ZkVaultBasic.wasm"),
-    path.join(__dirname, "../circuits/build/ZkVaultBasic.zkey")
+    path.join(__dirname, "../build/ZkVaultBasic_js/ZkVaultBasic.wasm"),
+    path.join(__dirname, "../build/ZkVaultBasic.zkey")
   );
 
   // Print balances before the withdrawal

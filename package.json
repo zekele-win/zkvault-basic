@@ -2,8 +2,8 @@
   "name": "zkvault-basic",
   "version": "1.0.0",
   "scripts": {
-    "build": "mkdir -p ./circuits/build && ~/tool/iden3/circom ./circuits/ZkVaultBasic.circom --r1cs --wasm -o ./circuits/build",
-    "setup": "snarkjs groth16 setup circuits/build/ZkVaultBasic.r1cs circuits/powersOfTau28_hez_final_12.ptau circuits/build/ZkVaultBasic.zkey && snarkjs zkey export verificationkey circuits/build/ZkVaultBasic.zkey circuits/build/ZkVaultBasicVerificationKey.json && snarkjs zkey export solidityverifier circuits/build/ZkVaultBasic.zkey contracts/ZkVaultBasicVerifier.sol",
+    "build": "mkdir -p ./build && ~/tool/iden3/circom ./circuits/ZkVaultBasic.circom --r1cs --wasm -o ./build",
+    "setup": "snarkjs groth16 setup ./build/ZkVaultBasic.r1cs ./ref/powersOfTau28_hez_final_12.ptau ./build/ZkVaultBasic.zkey && snarkjs zkey export verificationkey ./build/ZkVaultBasic.zkey ./build/ZkVaultBasicVerificationKey.json && snarkjs zkey export solidityverifier ./build/ZkVaultBasic.zkey ./contracts/ZkVaultBasicVerifier.sol",
     "compile": "hardhat clean && hardhat compile",
     "test": "hardhat test",
     "srv": "anvil -a 2 -m 'suffer fabric dwarf bomb raise pepper rapid pretty cream bleak crime wreck law shuffle puppy flip maximum general absorb faculty resource lyrics country coin'",

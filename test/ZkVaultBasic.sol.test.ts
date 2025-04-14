@@ -35,8 +35,8 @@ describe("ZkVaultBasic contract", function () {
         // Private inputs
         secret,
       },
-      "./circuits/build/ZkVaultBasic_js/ZkVaultBasic.wasm",
-      "./circuits/build/ZkVaultBasic.zkey"
+      "./build/ZkVaultBasic_js/ZkVaultBasic.wasm",
+      "./build/ZkVaultBasic.zkey"
     );
     // console.log({ proof, publicSignals });
 
