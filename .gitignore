@@ -15,12 +15,6 @@ coverage/
 typechain/
 typechain-types/
 
-# circom
-*.wasm
-*.sym
-*.zkey
-*.ptau
-
 # MacOS specific files
 .DS_Store
 
@@ -41,4 +35,4 @@ coverage/
 
 # Local files
 .env
-loc
+ref
